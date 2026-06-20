@@ -63,7 +63,7 @@ new() { StudentId = students[1].Id, CourseId = courses[0].Id, Grade = 2.8m },
 new() { StudentId = students[3].Id, CourseId = courses[1].Id, Grade = 3.9m }
 };
 var count = await context.Students
-.Where(s =>  s.GPA >= 3.0m)
+.Where(s => s.IsActive && s.GPA >= 3.0m)
 .CountAsync();
 var list = await context.Courses
 .Select(c => new
