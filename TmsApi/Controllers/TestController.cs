@@ -65,7 +65,26 @@ public class TestController(TmsDbContext context) : ControllerBase
             .Take(pageSize)                    // take current page
             .ToListAsync(cancellationToken);
 
-
         return Ok(students);
+        
     }
+
+    [HttpGet("top-courses")]
+    public async Task<IActionResult> GetTopCourses(CancellationToken cancellationToken = default)
+    {
+        var topCourses = await context.Enrollments
+            .GroupBy(e => e.Course.Title)
+            .Select(g => new
+            {
+                CourseName = g.Key,
+                EnrollmentCount = g.Count()
+            })
+            .OrderByDescending(x => x.EnrollmentCount)
+            .Take(5)
+            .ToListAsync(cancellationToken);
+
+        return Ok(topCourses);
+    }
+
+
 }
