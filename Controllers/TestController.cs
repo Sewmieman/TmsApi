@@ -66,7 +66,7 @@ public class TestController(TmsDbContext context) : ControllerBase
             .ToListAsync(cancellationToken);
 
         return Ok(students);
-        
+
     }
 
     [HttpGet("top-courses")]
@@ -87,4 +87,39 @@ public class TestController(TmsDbContext context) : ControllerBase
     }
 
 
+    [HttpGet("n-plus-anti-pattern")]
+    public async Task<IActionResult> GetNPlusBug(CancellationToken cancellationToken = default)
+    {
+        var students = await context.Students.ToListAsync();
+
+        foreach (var student in students)
+        {
+            Console.WriteLine(student.Enrollments.Count);
+        }
+
+
+        return Ok(students);
+    }
+public async Task GenerateStudentReport(CancellationToken cancellationToken)
+{
+    var report = await context.Students
+        .AsNoTracking()
+        .Select(s => new
+        {
+            s.Name,
+            EnrollmentCount = s.Enrollments.Count
+        })
+        .ToListAsync(cancellationToken);
+
+    foreach (var r in report)
+    {
+        Console.WriteLine( $"{r.Name}: {r.EnrollmentCount} enrollments");
+    }
+    var students = await context.Students
+      .AsNoTracking()
+      .Include(s => s.Enrollments)
+      .ToListAsync(cancellationToken);
+foreach (var s in students)
+Console.WriteLine($"{s.Name}: {s.Enrollments.Count} enrollments");
+}
 }

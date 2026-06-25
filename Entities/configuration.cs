@@ -23,6 +23,8 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
 
         builder.HasIndex(s => s.RegistrationNumber)
             .IsUnique();
+           builder.Property<DateTime>("LastUpdated")
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");  
     }
 }public class CourseConfiguration : IEntityTypeConfiguration<Course>
 {

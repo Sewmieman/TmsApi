@@ -1,5 +1,6 @@
 using System;
 namespace TmsApi.Entities;
+
 public class Enrollment
 {
 public int Id { get; set; }

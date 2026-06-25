@@ -1,4 +1,5 @@
 namespace TmsApi.Entities;
+using Microsoft.EntityFrameworkCore.Migrations;
 public class Student
 {
 public int Id { get; set; }
@@ -10,4 +11,23 @@ public bool IsActive { get; set; } = true;
 // Navigation property for many-to-many relationship
 public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
 
+}
+public partial class AddStudentEmail : Migration
+{
+    protected override void Up(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.AddColumn<string>(
+            name: "Email",
+            table: "Students",
+            type: "text",
+            nullable: false,
+            defaultValue: "");
+    }
+
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropColumn(
+            name: "Email",
+            table: "Students");
+    }
 }

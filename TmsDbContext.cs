@@ -8,4 +8,19 @@ public class TmsDbContext(DbContextOptions<TmsDbContext> options) : DbContext(op
     public DbSet<Student> Students => Set<Student>();
     public DbSet<Course> Courses => Set<Course>();
     public DbSet<Enrollment> Enrollments => Set<Enrollment>();
+
+    public override async Task<int> SaveChangesAsync(
+        CancellationToken cancellationToken = default)
+    {
+        foreach(var entry in ChangeTracker.Entries())
+        {
+            if(entry.State == EntityState.Modified)
+            {
+                entry.Property("LastUpdated")
+                     .CurrentValue = DateTime.UtcNow;
+            }
+        }
+
+        return await base.SaveChangesAsync(cancellationToken);
+    }
 }
