@@ -1,6 +1,0 @@
-@TmsApi_HostAddress = http://localhost:5085
-
-GET {{TmsApi_HostAddress}}/top-courses
-Accept: application/json
-
-###
