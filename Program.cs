@@ -9,12 +9,12 @@ using Tms.Api.Filters;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers(options =>
 {
-options.Filters.Add<AuditLogFilter>();
+    options.Filters.Add<AuditLogFilter>();
 });
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
 builder.Services.AddOpenApi();
-builder.Services.AddSingleton<EnrollmentWorker>();
+//builder.Services.AddSingleton<EnrollmentWorker>();
 builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
 builder.Services.AddScoped<ICourseService, CourseService>();
 // Add services to the container.
@@ -49,9 +49,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseExceptionHandler();
 app.UseStatusCodePages();
+app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthentication();
-app.UseHttpsRedirection();
+
 app.UseAuthorization();
 app.MapControllers();
 

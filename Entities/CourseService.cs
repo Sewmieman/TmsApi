@@ -22,10 +22,31 @@ Code = request.Code,
 Title = request.Title,
 MaxCapacity = request.MaxCapacity
 };
+
 context.Courses.Add(course);
 await context.SaveChangesAsync(ct);
 logger.LogInformation("Created course {CourseId} ({Code})", course.
 Id, course.Code);
 return (await GetByIdAsync(course.Id, ct))!;
 }
+
+    public Task GetByIdAsync(object id, CancellationToken ct)
+    {
+        throw new NotImplementedException();
+    }
+    public async Task<PagedResponse<CourseResponseDto>> GetPagedAsync( PagedRequest request,
+    CancellationToken ct)
+{
+   throw new NotImplementedException();
+
+    // public Task GetCoursesAsync(PagedRequest request, CancellationToken ct)
+    // {
+    //     throw new NotImplementedException();
+    // }
+    }
+
+    public Task GetCoursesAsync(PagedRequest request, CancellationToken ct)
+    {
+        throw new NotImplementedException();
+    }
 }
