@@ -6,6 +6,13 @@ using Asp.Versioning;
 using TmsApi.Middleware;
 using TmsApi.Filters;
 using TmsApi.Infrastructure.Persistence;
+using TmsApi.Application.Enrollments.Commands;
+using FluentValidation;
+using MediatR;
+using TmsApi.Application.Behaviors;
+using TmsApi.Api.ExceptionHandlers;
+using TmsApi.Application.Interfaces;
+using Microsoft.Extensions.Caching.Hybrid;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +21,20 @@ builder.Services.AddControllers(options =>
     options.Filters.Add<AuditLogFilter>();
 });
 
+builder.Services.AddMediatR(cfg =>cfg.RegisterServicesFromAssembly(typeof(EnrollStudentHandler).Assembly));
+builder.Services.AddValidatorsFromAssembly(typeof(EnrollStudentValidator).Assembly);
+builder.Services.AddHybridCache(options =>
+{
+    options.DefaultEntryOptions = new HybridCacheEntryOptions
+    {
+        Expiration = TimeSpan.FromMinutes(10), LocalCacheExpiration = TimeSpan.FromMinutes(2)
+    };
+});
+// LoggingBehavior FIRST—it must wrap ValidationBehavior
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 builder.Services.AddDbContext<TmsDbContext>(options =>options.UseNpgsql(builder.Configuration.GetConnectionString("TmsDatabase")));
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
@@ -51,6 +72,14 @@ options.UseNpgsql(builder.Configuration.GetConnectionString("TmsDatabase"))
 // Register TmsDbContext scoped for incoming HTTP requests
 // builder.Services.AddDbContext<TmsDbContext>(options =>
 // options.UseNpgsql(builder.Configuration.GetConnectionString("TmsDatabase")));
+builder.Services.AddCors(options =>
+{
+options.AddPolicy("AllowAngular", policy =>
+policy.WithOrigins("http://localhost:4200")
+.AllowAnyHeader()
+.AllowAnyMethod());
+});
+// ...
 
 
 builder.Host.UseDefaultServiceProvider(options =>
@@ -79,7 +108,7 @@ if (app.Environment.IsDevelopment())
 
 // // update your scalar config
 // app.MapScalarApiReference();
-
+app.UseCors("AllowAngular");
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 app.UseHttpsRedirection();
@@ -91,3 +120,7 @@ app.UseAuthorization();
 app.MapControllers();
 app.UseMiddleware<V1DeprecationMiddleware>();
 app.Run();
+
+internal interface ICachedCourseService
+{
+}

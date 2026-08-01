@@ -1,48 +1,78 @@
 // Create Services/ICourseService.cs:
 
+using TmsApi.Application.Dtos;
+using TmsApi.Application.Interfaces;
 using Microsoft.Extensions.Logging;
-
+using TmsApi.Domain.Entities;
+using TmsApi.Infrastructure.Persistence;
 
 namespace TmsApi.Infrastructure.Services;
-public class EnrollmentService : IEnrollmentService
+
+public class EnrollmentService(TmsDbContext context, ILogger<CourseService> logger) : IEnrollmentService
 {
-    private readonly Dictionary<string, EnrollmentRecord> _store = new();
-    private readonly ILogger<EnrollmentService> _logger;
-    public EnrollmentService(ILogger<EnrollmentService> logger)
+    public async Task AddAsync(Enrollment enrollment, CancellationToken ct)
     {
-        _logger = logger;
+        await context.Enrollments.AddAsync(enrollment, ct);
+        await context.SaveChangesAsync(ct);
     }
-    public Task<EnrollmentRecord> EnrollAsync(string studentId, string courseCode)
+
+
+    public Task<object> GetByStudentIdAsync(object studentI)
     {
-        var id = Guid.NewGuid().ToString("N")[..8];
-        var record = new EnrollmentRecord(id, studentId, courseCode, DateTime.UtcNow);
-        _store[id] = record;
-        _logger.LogInformation(
-            "Enrolled {StudentId} in {CourseCode} record {EnrollmentId}",
-            studentId, courseCode, id);
-        return Task.FromResult(record);
+        throw new NotImplementedException();
     }
-    public Task<EnrollmentRecord?> GetByIdAsync(string id)
+
+    public Task<IEnumerable<object>> GetByStudentIdAsync(int studentId, CancellationToken ct)
     {
-        _store.TryGetValue(id, out var record);
-        return Task.FromResult(record);
+        throw new NotImplementedException();
     }
-    public Task<IReadOnlyList<EnrollmentRecord>> GetAllAsync()
+
+    // public Task<bool> ExistsAsync(int studentId, string courseCode, CancellationToken ct)
+    // {
+    //     throw new NotImplementedException();
+    // }
+
+    Task<EnrollmentRecord> IEnrollmentService.EnrollAsync(string studentId, string courseCode)
     {
-        IReadOnlyList<EnrollmentRecord> all = _store.Values.ToList();
-        return Task.FromResult(all);
+        throw new NotImplementedException();
     }
-    public Task<bool> DeleteAsync(string id)
+
+    Task<EnrollmentRecord?> IEnrollmentService.GetByIdAsync(string id)
     {
-        var removed = _store.Remove(id);
-        return Task.FromResult(removed);
+        throw new NotImplementedException();
     }
+
+    // Task<EnrollmentRecord?> IEnrollmentService.ExistsAsync(string id)
+    // {
+    //     throw new NotImplementedException();
+    // }
+
+    Task<IReadOnlyList<EnrollmentRecord>> IEnrollmentService.GetAllAsync()
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<bool> IEnrollmentService.DeleteAsync(string id)
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<object> IEnrollmentService.GetByStudentIdAsync(object studentI)
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<IEnumerable<object>> IEnrollmentService.GetByStudentIdAsync(int studentId, CancellationToken ct)
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<bool> IEnrollmentService.ExistsAsync(int studentId, string courseCode, CancellationToken ct)
+    {
+        throw new NotImplementedException();
+    }
+
+
+
+
 }
-//--- The data shape--
-public record EnrollmentRecord(
-    string Id,
-    string StudentId,
-    string CourseCode,
-    DateTime EnrolledAt);
-// These registrations are given do NOT change them:
-public class TmsDatabaseException(string message) : Exception(message);
