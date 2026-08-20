@@ -1,4 +1,6 @@
 
+using TmsApi.Application.Interfaces;
+
 public class EnrollmentWorker
 {
     private readonly IServiceScopeFactory factory;

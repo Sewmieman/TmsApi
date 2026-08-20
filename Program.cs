@@ -21,6 +21,8 @@ using TmsApi.Api.Hubs;
 using TmsApi.Api.Notifications;
 using TmsApi.Application.Notifications;
 using Microsoft.AspNetCore.Antiforgery;
+using TmsApi.Infrastructure.Identity;
+using Microsoft.AspNetCore.Identity;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers(options =>
 {
@@ -97,6 +99,8 @@ builder.Services.AddSingleton(Channel.CreateBounded<TranscriptRequest>(
     {
         FullMode = BoundedChannelFullMode.Wait
     }));
+    // Add RFC 7807 ProblemDetails support to the DI container
+builder.Services.AddProblemDetails();
 builder.Services.AddDbContext<TmsDbContext>(options =>
 options.UseNpgsql(builder.Configuration.GetConnectionString("TmsDatabase"))
 .LogTo(Console.WriteLine, LogLevel.Information) // Log SQL to output window
@@ -113,7 +117,20 @@ policy.WithOrigins("http://localhost:4200")
 });
 // ...
 
-
+builder.Services.AddIdentityCore<TmsUser>(options =>
+{
+// Enterprise Password Policy
+options.Password.RequiredLength = 12;
+options.Password.RequireUppercase = true;
+options.Password.RequireDigit = true;
+options.Password.RequireNonAlphanumeric = true;
+// Brute-Force Lockout Protection
+options.Lockout.MaxFailedAccessAttempts = 5;
+options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+options.Lockout.AllowedForNewUsers = true;
+})
+.AddRoles<IdentityRole>()
+.AddEntityFrameworkStores<TmsDbContext>();
 builder.Host.UseDefaultServiceProvider(options =>
 {
     options.ValidateScopes = true;
@@ -143,6 +160,8 @@ app.UseCors("TmsClient");
 app.MapHub<TmsHub>("/hubs/tms");
 // // update your scalar config
 // app.MapScalarApiReference();
+app.MapHub<TmsHub>("/hubs/tms").RequireCors("TmsClient");
+app.UseStatusCodePages(); // Converts 4xx/5xx responses into standard ProblemDetails payloads
 app.UseCors("AllowAngular");
 app.UseExceptionHandler();
 app.UseStatusCodePages();
@@ -174,6 +193,3 @@ app.MapControllers();
 app.UseMiddleware<V1DeprecationMiddleware>();
 app.Run();
 
-internal interface ICachedCourseService
-{
-}

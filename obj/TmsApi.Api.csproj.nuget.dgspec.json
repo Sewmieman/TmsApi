@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\CSUG\\Desktop\\myTraining\\TmsApi\\tmsapi.api\\TmsApi.Api.csproj": {}
+    "C:\\Users\\CSUG\\Desktop\\myTraining\\TmsApi\\TmsApi.Api\\TmsApi.Api.csproj": {}
   },
   "projects": {
-    "C:\\Users\\CSUG\\Desktop\\myTraining\\TmsApi\\tmsapi.api\\TmsApi.Api.csproj": {
+    "C:\\Users\\CSUG\\Desktop\\myTraining\\TmsApi\\TmsApi.Api\\TmsApi.Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\CSUG\\Desktop\\myTraining\\TmsApi\\tmsapi.api\\TmsApi.Api.csproj",
+        "projectUniqueName": "C:\\Users\\CSUG\\Desktop\\myTraining\\TmsApi\\TmsApi.Api\\TmsApi.Api.csproj",
         "projectName": "TmsApi.Api",
-        "projectPath": "C:\\Users\\CSUG\\Desktop\\myTraining\\TmsApi\\tmsapi.api\\TmsApi.Api.csproj",
+        "projectPath": "C:\\Users\\CSUG\\Desktop\\myTraining\\TmsApi\\TmsApi.Api\\TmsApi.Api.csproj",
         "packagesPath": "C:\\Users\\CSUG\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\CSUG\\Desktop\\myTraining\\TmsApi\\tmsapi.api\\obj\\",
+        "outputPath": "C:\\Users\\CSUG\\Desktop\\myTraining\\TmsApi\\TmsApi.Api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\CSUG\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -1258,9 +1258,17 @@
           "framework": "net10.0",
           "targetAlias": "net10.0",
           "dependencies": {
+            "BCrypt.Net-Next": {
+              "target": "Package",
+              "version": "[4.2.0, )"
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[10.0.11, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[10.0.10, )"
+              "version": "[10.0.11, )"
             },
             "Microsoft.EntityFrameworkCore.Design": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
@@ -1270,11 +1278,15 @@
             },
             "Microsoft.EntityFrameworkCore.Relational": {
               "target": "Package",
-              "version": "[10.0.10, )"
+              "version": "[10.0.11, )"
             },
             "Microsoft.Extensions.Hosting.Abstractions": {
               "target": "Package",
               "version": "[10.0.10, )"
+            },
+            "Microsoft.Extensions.Identity.Stores": {
+              "target": "Package",
+              "version": "[10.0.11, )"
             },
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
